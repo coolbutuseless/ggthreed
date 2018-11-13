@@ -1,0 +1,11 @@
+^Meta$
+^doc$
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^README-.*\.png$
+^obj$
+^data-raw$
+^working$
+^figures$
+^README.html$

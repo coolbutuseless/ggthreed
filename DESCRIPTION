@@ -1,0 +1,21 @@
+Package: ggthreed
+Type: Package
+Title: Threed Geoms
+Version: 0.1.0
+Author: mikefc
+Maintainer: mikefc <mikefc@coolbutuseless.com>
+Description: Threed geoms.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends:
+  R (>= 2.10.0)
+RoxygenNote: 6.1.0
+Suggests: testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Imports:
+  dplyr,
+  ggplot2,
+  threed

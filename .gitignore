@@ -1,0 +1,12 @@
+Meta
+doc
+.DS_Store
+.Rhistory
+*.Rproj
+.Rproj.user
+*~
+*.swp
+obj
+inst/doc
+README.html
+
