@@ -39,8 +39,9 @@ At present it consists of just a single geom: `geom_threedpie()` which creates
 You can install from github
 
 ```{r eval=FALSE}
-install.packages("coolbutuseless/threed")
-install.packages("coolbutuseless/ggthreed")
+# install.packages("devtools")
+devtools::install_github("coolbutuseless/threed")
+devtools::install_github("coolbutuseless/ggthreed")
 ```
 
 

@@ -19,8 +19,9 @@ here.**
 You can install from github
 
 ``` r
-install.packages("coolbutuseless/threed")
-install.packages("coolbutuseless/ggthreed")
+# install.packages("devtools")
+devtools::install_github("coolbutuseless/threed")
+devtools::install_github("coolbutuseless/ggthreed")
 ```
 
 ## Usage
