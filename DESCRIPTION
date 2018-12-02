@@ -15,6 +15,7 @@ Suggests: testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Remotes: github::coolbutuseless/threed
 Imports:
   dplyr,
   ggplot2,
