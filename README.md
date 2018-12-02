@@ -1,7 +1,12 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # ggthreed - 3d geoms for ggplot2<img src="man/figures/logo-with-pause.gif" align="right"/>
 
+[![Travis build
+status](https://travis-ci.org/coolbutuseless/ggthreed.svg?branch=master)](https://travis-ci.org/coolbutuseless/ggthreed)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/coolbutuseless/ggthreed?branch=master&svg=true)](https://ci.appveyor.com/project/coolbutuseless/ggthreed)
 ![](https://img.shields.io/badge/lifecycle-alpha-orange.svg)
 
 [`ggthreed`](https://github.com/coolbutuseless/ggthreed) is a collection
