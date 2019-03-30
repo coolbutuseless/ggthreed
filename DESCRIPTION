@@ -1,10 +1,10 @@
 Package: ggthreed
 Type: Package
-Title: Threed Geoms
-Version: 0.1.1
+Title: Threed Geoms and Stats for Ggplot2
+Version: 0.1.2
 Author: mikefc
 Maintainer: mikefc <mikefc@coolbutuseless.com>
-Description: Threed geoms.
+Description: Threed geoms and stats for ggplot2.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

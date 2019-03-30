@@ -1,4 +1,8 @@
 
+# ggthreed 0.1.2
+
+* Add `StatAnaglyph` for creating red-blue anaglyphs
+
 # ggthreed 0.1.1
 
 * Fix issue #3

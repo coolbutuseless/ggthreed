@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ggthreed - 3d geoms for ggplot2<img src="man/figures/logo-with-pause.gif" align="right"/>
+# ggthreed - 3d geoms and stats for ggplot2<img src="man/figures/logo-with-pause.gif" align="right"/>
 
 [![Travis build
 status](https://travis-ci.org/coolbutuseless/ggthreed.svg?branch=master)](https://travis-ci.org/coolbutuseless/ggthreed)
@@ -13,11 +13,12 @@ status](https://ci.appveyor.com/api/projects/status/github/coolbutuseless/ggthre
 of [`ggplot2`](https://github.com/tidyverse/ggplot2) geoms which use the
 [`threed`](https://github.com/coolbutuseless/threed) library.
 
-At present it consists of just a single geom: `geom_threedpie()` which
-creates 3d pie charts.
+What’s in the box:
 
-**I am fully aware of the crimes against visualisation I am committing
-here.**
+  - `geom_threedpie()` for creating 3d pie charts.
+      - **I am fully aware of the crimes against visualisation I am
+        committing here.**
+  - `stat_anaglyph()` for creating red-blue anaglyph images
 
 ## Installation
 
@@ -28,6 +29,45 @@ You can install from github
 devtools::install_github("coolbutuseless/threed")
 devtools::install_github("coolbutuseless/ggthreed")
 ```
+
+# Red/blue anaglyphs with `stat_anaglyph()`
+
+**Grab your glasses and lower your expectations\!\!**
+
+![](man/figures/glasses.jpg)
+
+## Usage
+
+  - Works with point, line and polygon geoms. Although “works” may be a
+    strong term - the 3d effect is very weak even if you tweak all the
+    parameters
+  - It might work with other geoms, but no guarantees that it produces
+    anything worth looking at.
+  - parameters:
+      - `zoffset`, `zscale` - for determining how `z` aesthetic
+        influences position
+      - `red`, `blue` - hex colours to use for red/blue
+      - `switch` - switch position of the colours
+
+## Example red/blue anaglyphs with points and lines.
+
+``` r
+ggplot(mtcars) +
+  geom_point(aes(mpg, y = wt, z = disp), stat = 'anaglyph', alpha = 0.75) +
+  theme_bw()
+```
+
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+
+``` r
+ggplot(mtcars) +
+  geom_line(aes(mpg, y = wt, z = disp, group = cyl), stat = 'anaglyph', alpha = 0.75) +
+  theme_bw()
+```
+
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+
+# 3d pie charts with `geom_threedpie()`
 
 ## Usage
 
@@ -49,7 +89,7 @@ devtools::install_github("coolbutuseless/ggthreed")
     `theme_void()`. Not sure how to disable this from within the `geom`.
   - Pie slice resolution is in increments of 2 degrees.
 
-# Example - Simple Pie Chart
+## Example - Simple Pie Chart
 
 ``` r
 ggplot(mtcars) + 
@@ -60,7 +100,7 @@ ggplot(mtcars) +
 
 <img src="man/figures/README-example-simple-1.png" width="500" />
 
-# Example - Facetted Pie Chart
+## Example - Facetted Pie Chart
 
 ``` r
 ggplot(diamonds)  +
@@ -73,7 +113,7 @@ ggplot(diamonds)  +
 
 <img src="man/figures/README-example-facet-1.png" width="100%" />
 
-# Example - Behind the Scenes
+## Example - Behind the Scenes
 
   - This plot shows the polygons making up the pie.
   - Triangular polygons are rendered on top, and quadrilaterals are
@@ -98,7 +138,7 @@ ggplot(mtcars) +
 
 <img src="man/figures/README-example-behind-1.png" width="100%" />
 
-# Example - Pie configuration
+## Example - Pie configuration
 
 User adjustable:
 
