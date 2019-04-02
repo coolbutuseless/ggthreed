@@ -49,7 +49,7 @@ devtools::install_github("coolbutuseless/ggthreed")
       - `red`, `blue` - hex colours to use for red/blue
       - `switch` - switch position of the colours
 
-## Example red/blue anaglyphs with points and lines.
+## Example red/blue anaglyphs with points.
 
 ``` r
 ggplot(mtcars) +
@@ -59,13 +59,36 @@ ggplot(mtcars) +
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
+### Example of combined 3d projection and anaglyph
+
 ``` r
-ggplot(mtcars) +
-  geom_line(aes(mpg, y = wt, z = disp, group = cyl), stat = 'anaglyph', alpha = 0.75) +
-  theme_bw()
+library(threed)
+
+camera_to_world <- look_at_matrix(eye = c(1.5, 1.75, 3), at = c(0, 0, 0))
+
+obj <- threed::mesh3dobj$cube %>%
+  transform_by(invert_matrix(camera_to_world)) %>%
+  perspective_projection()
+
+ggplot(obj, aes(x, y, z = z, group = element_id)) +
+  geom_polygon(fill = NA, colour='black', aes(size = hidden), stat = 'anaglyph', 
+               zscale = 0.01, zoffset = -0.5) +
+  scale_linetype_manual(values = c('TRUE' = "FF", 'FALSE' = 'solid')) +
+  scale_size_manual(values = c('TRUE' = 0.1, 'FALSE' = 0.5)) +
+  theme_void() +
+  theme(legend.position = 'none') +
+  coord_equal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-gallery-cube-1.png" width="100%" />
+
+## Animated Anaglyph
+
+### Animated Icosahedron
+
+See `vignette('animated-anaglyph', package='ggthreed')`
+
+![](vignettes/gif/animated-anaglyph.gif)
 
 # 3d pie charts with `geom_threedpie()`
 

@@ -1,0 +1,154 @@
+---
+title: "Animated Anaglyph"
+author: "mikefc"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(ggplot2)
+  library(threed)
+  library(ggthreed)
+})
+
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
+In this vignette, `threed` is used to generate multiple anaglyph images which are then stitched
+together into an animation.
+
+
+# Configure plot
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set up plotting parameters
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+obj             <- threed::mesh3dobj$icosahedron
+nframes         <- 60
+angles          <- seq(0, 2*pi, length.out = nframes + 1) %>% head(-1)
+camera_to_world <- threed::look_at_matrix(eye = c(5, 0, 0), at = c(0, 0, 0))
+world_to_camera <- threed::invert_matrix(camera_to_world)
+```
+
+
+
+# Helper function
+
+Helper function
+
+1. Rotates given object
+2. Transforms to camera space and performs perspective projection
+3. Convert to data.frame and add shading
+4. Creates plot using `ggplot` + `geom_polygon`
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create a plot of a rotated object
+#'
+#' @param obj object to rotate
+#' @param world_to_camera  World-to-camera transformation
+#' @param xangle,yangle,zangle Angle of rotation around the x,y,z axes
+#' @param view_size adjust plot view size
+#'
+#' @return rotated + projected data.frame of object
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+plot_rotated_obj <- function(obj, world_to_camera, xangle = 0, yangle = xangle + pi/2, zangle = xangle * 2, view_size = 0.3) {
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Rotate the object and apply transformations
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  obj_rot <- obj %>%
+    rotate_by(angle = xangle, v = vec3(x = 1)) %>%
+    rotate_by(angle = yangle, v = vec3(y = 1)) %>%
+    rotate_by(angle = zangle, v = vec3(z = 1)) %>%
+    transform_by(world_to_camera) %>%
+    perspective_projection(n=1, f=5) %>%
+    identity()
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Explicitly convert to a data.frame and apply some easy face shading to
+  # mimic a light source above and to the right of the object
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  obj_df <- as.data.frame(obj_rot) %>% 
+    subset(!hidden) %>%
+    transform(shade = (fny + fnx) / 2)
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ggplot of the object
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  p <- ggplot(obj_df, aes(x, y)) +
+    # geom_polygon(aes(group = zorder, fill = shade, colour = shade)) +
+    geom_polygon(aes(group = zorder, z = z), fill = NA, colour = 'black', 
+                 stat = 'anaglyph', zscale = 0.003, zoffset = -0.1) +
+    # scale_fill_distiller  (palette = 'Blues', na.value = NA, limits = c(-1, 1)) +
+    # scale_colour_distiller(palette = 'Blues', na.value = NA, limits = c(-1, 1)) +
+    theme_void() +
+    theme(legend.position = 'none') +
+    coord_equal(xlim = c(-view_size, view_size), y = c(-view_size, view_size)) +
+    NULL
+  
+  p
+}
+```
+
+
+
+# Test Plot of a Single Frame
+
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Test plot
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+plot_rotated_obj(obj, world_to_camera, xangle = angles[1], view_size = 0.25)
+```
+
+
+
+# Create Plot for Every Angle and Combine into GIF
+
+```{r eval = FALSE}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a png_file for every angle
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+png_files <- seq_along(angles) %>% purrr::map_chr(function(i) {
+  cat("."); flush.console()
+  p        <- plot_rotated_obj(obj, world_to_camera, xangle = angles[i], view_size = 0.25)
+  png_file <- glue::glue("{tempdir()}/{i}.png")
+  ggsave(png_file, p, width=8, height=8, dpi = 75)
+  png_file
+})
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Use {gifski} to create the animation
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gif_file <- gifski::gifski(
+  png_files, gif_file = "vignettes/gif/animated-anaglyph.gif",
+  width = 400, height = 400, delay = 0.1
+)
+```
+
+
+![](gif/animated-anaglyph.gif)
+
+
+
+
+
+
+
+
