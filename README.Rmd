@@ -72,7 +72,7 @@ worth looking at.
 
 ```{r}
 ggplot(mtcars) +
-  geom_point(aes(mpg, y = wt, z = disp), stat = 'anaglyph', alpha = 0.75) +
+  geom_point(aes(mpg, y = wt, z = disp), stat = 'anaglyph', alpha = 0.5, zscale = 10) +
   theme_bw()
 ```
 
@@ -90,7 +90,7 @@ obj <- threed::mesh3dobj$cube %>%
 
 ggplot(obj, aes(x, y, z = z, group = element_id)) +
   geom_polygon(fill = NA, colour='black', aes(size = hidden), stat = 'anaglyph', 
-               zscale = 0.01, zoffset = -0.5) +
+               zscale = 0.03) +
   scale_linetype_manual(values = c('TRUE' = "FF", 'FALSE' = 'solid')) +
   scale_size_manual(values = c('TRUE' = 0.1, 'FALSE' = 0.5)) +
   theme_void() +

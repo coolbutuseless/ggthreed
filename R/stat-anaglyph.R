@@ -17,7 +17,7 @@
 #' @inheritParams ggplot2::layer
 #' @inheritParams ggplot2::geom_point
 #' @param zoffset,zscale how to offset the \code{x} coordinates based upon the
-#' z value \code{x +/- (z + zoffset) * zscale}
+#' z value \code{x +/- (zscale / z) + zoffset}. Default zoffset = 0, zscale = 1
 #' @param red,blue colours to use for the anaglyph
 #' @param switch switch sides for red/blue?  default: FALSE
 #'
@@ -76,7 +76,7 @@ StatAnaglyph <- ggproto("StatAnaglyph", Stat,
   required_aes = c("x", "z"),
   default_aes = aes(
     zoffset = 0.0,
-    zscale  = 0.0002,
+    zscale  = 1,
     switch  = FALSE,
     red     = "#ff0000",
     blue    = "#00fffb"
@@ -136,7 +136,7 @@ StatAnaglyph <- ggproto("StatAnaglyph", Stat,
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Calculate the adjustment of the x value depending on the z value
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    data <- transform(data, zadjust = (z + params$zoffset) * params$zscale)
+    data <- transform(data, zadjust = (params$zscale / z) + params$zoffset)
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Transform the data into red/blue versions
@@ -158,7 +158,7 @@ if (interactive()) {
 
   ggplot(mtcars) +
     geom_line(aes(mpg, y = wt, z = disp), stat = 'anaglyph', switch = TRUE,
-               zscale = 0.0005, alpha = 0.5) +
+               zscale = 10, alpha = 0.5) +
     theme_bw()
 
 }

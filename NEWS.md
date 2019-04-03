@@ -1,4 +1,8 @@
 
+# ggthreed 0.1.3
+
+* Change x position adjustment for `StatAnaglyph` to vary with 1/z
+
 # ggthreed 0.1.2
 
 * Add `StatAnaglyph` for creating red-blue anaglyphs

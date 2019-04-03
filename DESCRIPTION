@@ -1,7 +1,7 @@
 Package: ggthreed
 Type: Package
 Title: Threed Geoms and Stats for Ggplot2
-Version: 0.1.2
+Version: 0.1.3
 Author: mikefc
 Maintainer: mikefc <mikefc@coolbutuseless.com>
 Description: Threed geoms and stats for ggplot2.

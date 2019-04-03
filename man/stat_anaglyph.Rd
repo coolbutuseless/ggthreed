@@ -35,7 +35,7 @@ will be used as the layer data.}
 a call to a position adjustment function.}
 
 \item{zoffset, zscale}{how to offset the \code{x} coordinates based upon the
-z value \code{x +/- (z + zoffset) * zscale}}
+z value \code{x +/- (zscale / z) + zoffset}. Default zoffset = 0, zscale = 1}
 
 \item{red, blue}{colours to use for the anaglyph}
 
