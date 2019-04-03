@@ -5,7 +5,7 @@
 \title{Red-blue anaglyph}
 \usage{
 stat_anaglyph(mapping = NULL, data = NULL, geom = "point",
-  position = "identity", zoffset = 0, zscale = 2e-04,
+  position = "identity", zoffset = 0, zscale = 1, zinvert = TRUE,
   red = "#ff0000", blue = "#00fffb", switch = FALSE, ...,
   show.legend = NA, inherit.aes = TRUE)
 }
@@ -35,7 +35,9 @@ will be used as the layer data.}
 a call to a position adjustment function.}
 
 \item{zoffset, zscale}{how to offset the \code{x} coordinates based upon the
-z value \code{x +/- (zscale / z) + zoffset}. Default zoffset = 0, zscale = 1}
+z Default zoffset = 0, zscale = 1}
+
+\item{zinvert}{Does z get bigger as a point moves further away. default: TRUE}
 
 \item{red, blue}{colours to use for the anaglyph}
 

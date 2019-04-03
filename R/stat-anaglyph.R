@@ -17,7 +17,8 @@
 #' @inheritParams ggplot2::layer
 #' @inheritParams ggplot2::geom_point
 #' @param zoffset,zscale how to offset the \code{x} coordinates based upon the
-#' z value \code{x +/- (zscale / z) + zoffset}. Default zoffset = 0, zscale = 1
+#' z Default zoffset = 0, zscale = 1
+#' @param zinvert Does z get bigger as a point moves further away. default: TRUE
 #' @param red,blue colours to use for the anaglyph
 #' @param switch switch sides for red/blue?  default: FALSE
 #'
@@ -36,7 +37,8 @@ stat_anaglyph <- function(mapping     = NULL,
                           geom        = "point",
                           position    = "identity",
                           zoffset     = 0.0,
-                          zscale      = 0.0002,
+                          zscale      = 1.0,
+                          zinvert     = TRUE,
                           red         = "#ff0000",
                           blue        = "#00fffb",
                           switch      = FALSE,
@@ -54,6 +56,7 @@ stat_anaglyph <- function(mapping     = NULL,
     params = list(
       zoffset = zoffset,
       zscale  = zscale,
+      zinvert = zinvert,
       red     = red,
       blue    = blue,
       switch  = switch,
@@ -77,6 +80,7 @@ StatAnaglyph <- ggproto("StatAnaglyph", Stat,
   default_aes = aes(
     zoffset = 0.0,
     zscale  = 1,
+    zinvert = TRUE,
     switch  = FALSE,
     red     = "#ff0000",
     blue    = "#00fffb"
@@ -85,7 +89,7 @@ StatAnaglyph <- ggproto("StatAnaglyph", Stat,
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Need to set arguments here so ggplot is aware of the params
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  compute_group = function(data, scales, zoffset, zscale, switch, red, blue) {
+  compute_group = function(data, scales, zoffset, zscale, switch, red, blue, zinvert) {
     data
   },
 
@@ -122,6 +126,7 @@ StatAnaglyph <- ggproto("StatAnaglyph", Stat,
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     params$zoffset <- params$zoffset %||% self$default_aes$zoffset
     params$zscale  <- params$zscale  %||% self$default_aes$zscale
+    params$zinvert <- params$zinvert %||% self$default_aes$zinvert
     params$switch  <- params$switch  %||% self$default_aes$switch
     params$red     <- params$red     %||% self$default_aes$red
     params$blue    <- params$blue    %||% self$default_aes$blue
@@ -136,7 +141,11 @@ StatAnaglyph <- ggproto("StatAnaglyph", Stat,
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Calculate the adjustment of the x value depending on the z value
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    data <- transform(data, zadjust = (params$zscale / z) + params$zoffset)
+    if (params$zinvert) {
+      data <- transform(data, zadjust = (params$zscale / (z + params$zoffset)))
+    } else {
+      data <- transform(data, zadjust = (params$zscale * (z + params$zoffset)))
+    }
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Transform the data into red/blue versions

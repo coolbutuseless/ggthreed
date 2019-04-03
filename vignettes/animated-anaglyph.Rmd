@@ -86,15 +86,14 @@ plot_rotated_obj <- function(obj, world_to_camera, xangle = 0, yangle = xangle +
     subset(!hidden) %>%
     transform(shade = (fny + fnx) / 2)
   
+  # print(sort(obj_df$z))
+  
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ggplot of the object
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   p <- ggplot(obj_df, aes(x, y)) +
-    # geom_polygon(aes(group = zorder, fill = shade, colour = shade)) +
-    geom_polygon(aes(group = zorder, z = z), fill = NA, colour = 'black', 
-                 stat = 'anaglyph', zscale = 0.01) +
-    # scale_fill_distiller  (palette = 'Blues', na.value = NA, limits = c(-1, 1)) +
-    # scale_colour_distiller(palette = 'Blues', na.value = NA, limits = c(-1, 1)) +
+    geom_polygon(aes(group = zorder, z = z), fill = NA, alpha = 0.5,
+                 stat = 'anaglyph', zscale = 0.03, zoffset = -1.9, zinvert = FALSE) +
     theme_void() +
     theme(legend.position = 'none') +
     coord_equal(xlim = c(-view_size, view_size), y = c(-view_size, view_size)) +

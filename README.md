@@ -68,11 +68,12 @@ camera_to_world <- look_at_matrix(eye = c(1.5, 1.75, 3), at = c(0, 0, 0))
 
 obj <- threed::mesh3dobj$cube %>%
   transform_by(invert_matrix(camera_to_world)) %>%
+  translate_by(c(0, 0, -3)) %>%
   perspective_projection()
 
 ggplot(obj, aes(x, y, z = z, group = element_id)) +
-  geom_polygon(fill = NA, colour='black', aes(size = hidden), stat = 'anaglyph', 
-               zscale = 0.03) +
+  geom_polygon(fill = NA, colour='black', aes(size = hidden), stat = 'anaglyph',
+               zscale = 0.05, zoffset = -1.4, zinvert = FALSE) +
   scale_linetype_manual(values = c('TRUE' = "FF", 'FALSE' = 'solid')) +
   scale_size_manual(values = c('TRUE' = 0.1, 'FALSE' = 0.5)) +
   theme_void() +
